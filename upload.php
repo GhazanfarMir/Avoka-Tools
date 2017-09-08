@@ -2,8 +2,6 @@
 
 require 'vendor/autoload.php';
 
-use EburyLabs\Google\Service\Drive;
-
 error_reporting(0);
 
 $api_key = 'AIzaSyC5yvRnsAKlSxPCJCf94OF-MkYpJX3jn88';
