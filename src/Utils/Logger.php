@@ -24,6 +24,8 @@ class Logger
     public static function log($message, $messageType = 'debug')
     {
 
+        date_default_timezone_set('Europe/London');
+
         $timestamp = date('D M d h:i:s');
 
         switch (strtolower($messageType)) {

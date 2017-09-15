@@ -2,6 +2,13 @@
 
 namespace EburyLabs\Google\Service;
 
+use Google_Auth_AssertionCredentials;
+use Google_Service_Drive_DriveFile;
+use EburyLabs\Utils\Logger;
+use Google_Service_Drive;
+use Google_Client;
+use Dotenv\Dotenv;
+
 /**
  * Class Drive
  * @package EburyLabs\Utils\Google
@@ -17,16 +24,6 @@ class Drive
      * @var
      */
     public static $userEmail;
-
-    /**
-     * @var
-     */
-    public static $brandFolder;
-
-    /**
-     * @var
-     */
-    public static $rootFolder;
 
     /**
      * @var
@@ -59,14 +56,30 @@ class Drive
     public static $privateKeyPass;
 
     /**
-     *
+     * @var
      */
-    public static $root;
+    public static $rootFolder;
 
     /**
      * @var
      */
-    public static $folderId;
+    public static $corporateClientsFolderName;
+
+    /**
+     * @var
+     */
+    public static $privateClientsFolderName;
+
+
+    /**
+     * @var
+     */
+    public static $corporateClientsFolderId;
+
+    /**
+     * @var
+     */
+    public static $privateClientsFolderId;
 
     /**
      * @var
@@ -81,13 +94,20 @@ class Drive
         printf('Error! You can not initialise the ' . __CLASS__ );
     }
 
+    public static function loadEnv()
+    {
+        $dotenv = new Dotenv(__DIR__ . '/../../../');
+        $dotenv->load();
+    }
+
     /**
      * Initialise properties from environment variables
      */
     public static function init()
     {
 
-        // drive setup initialisation
+        self::loadEnv();
+
         self::$userToImpersonate = getenv('GOOGLE_DRIVE_IMPERSONATE_EMAIL');
 
         self::$clientEmail = getenv('GOOGLE_DRIVE_CLIENT_EMAIL');
@@ -96,13 +116,17 @@ class Drive
 
         self::$privateKeyPass = getenv('GOOGLE_DRIVE_PRIVATE_KEY_PASS');
 
-        self::$folderId = getenv('GOOGLE_DRIVE_UPLOAD_FOLDER_ID');
+        self::$corporateClientsFolderId = getenv('GOOGLE_DRIVE_UPLOAD_FOLDER_ID');
+
+        self::$privateClientsFolderId = getenv('GOOGLE_DRIVE_PRIVATE_CLIENTS_FOLDER_ID');
 
         self::$folderPostfix = ' - Account Opening';
 
-        self::$brandFolder = 'Ebury corporate clients';
+        self::$corporateClientsFolderName = 'Ebury corporate clients';
 
-        self::$root = 'Client Documentation';
+        self::$privateClientsFolderName = 'Ebury Private Clients';
+
+        self::$rootFolder = 'Client Documentation';
 
         self::$scopes = [
             'https://www.googleapis.com/auth/drive',
