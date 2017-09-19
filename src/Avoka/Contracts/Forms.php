@@ -2,10 +2,4 @@
 
 namespace EburyLabs\Avoka\Contracts;
 
-
-interface AvokaForm
-{
-
-
-
-}
+interface Forms { }
