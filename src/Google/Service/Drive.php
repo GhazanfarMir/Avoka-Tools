@@ -2,12 +2,12 @@
 
 namespace EburyLabs\Google\Service;
 
-use Google_Auth_AssertionCredentials;
-use Google_Service_Drive_DriveFile;
-use EburyLabs\Utils\Logger;
-use Google_Service_Drive;
-use Google_Client;
 use Dotenv\Dotenv;
+use EburyLabs\Utils\Logger;
+use Google_Auth_AssertionCredentials;
+use Google_Client;
+use Google_Service_Drive;
+use Google_Service_Drive_DriveFile;
 
 /**
  * Class Drive
@@ -91,13 +91,7 @@ class Drive
      */
     private function __construct()
     {
-        printf('Error! You can not initialise the ' . __CLASS__ );
-    }
-
-    public static function loadEnv()
-    {
-        $dotenv = new Dotenv(__DIR__ . '/../../../');
-        $dotenv->load();
+        printf('Error! You can not initialise the ' . __CLASS__);
     }
 
     /**
@@ -108,16 +102,28 @@ class Drive
 
         self::loadEnv();
 
+        if (! getenv('GOOGLE_DRIVE_IMPERSONATE_EMAIL'))
+            throw new Exception('[GOOGLE_DRIVE_IMPERSONATE_EMAIL] env variable does not exist');
         self::$userToImpersonate = getenv('GOOGLE_DRIVE_IMPERSONATE_EMAIL');
 
+        if (! getenv('GOOGLE_DRIVE_CLIENT_EMAIL'))
+            throw new Exception('[GOOGLE_DRIVE_CLIENT_EMAIL] env variable does not exist');
         self::$clientEmail = getenv('GOOGLE_DRIVE_CLIENT_EMAIL');
 
+        if (! getenv('GOOGLE_DRIVE_CERTIFICATE_PATH'))
+            throw new Exception('[GOOGLE_DRIVE_CERTIFICATE_PATH] env variable does not exist');
         self::$privateKey = file_get_contents(getenv('GOOGLE_DRIVE_CERTIFICATE_PATH'));
 
+        if (! getenv('GOOGLE_DRIVE_PRIVATE_KEY_PASS'))
+            throw new Exception('[GOOGLE_DRIVE_PRIVATE_KEY_PASS] env variable does not exist');
         self::$privateKeyPass = getenv('GOOGLE_DRIVE_PRIVATE_KEY_PASS');
 
+        if (! getenv('GOOGLE_DRIVE_UPLOAD_FOLDER_ID'))
+            throw new Exception('[GOOGLE_DRIVE_UPLOAD_FOLDER_ID] env variable does not exist');
         self::$corporateClientsFolderId = getenv('GOOGLE_DRIVE_UPLOAD_FOLDER_ID');
 
+        if (! getenv('GOOGLE_DRIVE_PRIVATE_CLIENTS_FOLDER_ID'))
+            throw new exception('[GOOGLE_DRIVE_PRIVATE_CLIENTS_FOLDER_ID] env variable does not exist');
         self::$privateClientsFolderId = getenv('GOOGLE_DRIVE_PRIVATE_CLIENTS_FOLDER_ID');
 
         self::$folderPostfix = ' - Account Opening';
@@ -133,6 +139,12 @@ class Drive
             'https://www.googleapis.com/auth/drive.file'
         ];
 
+    }
+
+    public static function loadEnv()
+    {
+        $dotenv = new Dotenv(__DIR__ . '/../../../', '.env');
+        $dotenv->load();
     }
 
     /**
@@ -236,7 +248,7 @@ class Drive
             "name='$folder_name'",
             "trashed=false",    // #WEB-1154 (only look for folders which are not trashed)
             "mimeType='application/vnd.google-apps.folder'",
-            "'".self::$userToImpersonate . "' IN owners"
+            "'" . self::$userToImpersonate . "' IN owners"
         ];
 
         if (null !== $parent_id) $ands[] = "'$parent_id' IN parents";
