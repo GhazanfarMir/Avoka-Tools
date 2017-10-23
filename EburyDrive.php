@@ -19,7 +19,7 @@ class EburyDrive
     /**
      * @var
      */
-    public static $formId;
+    public static $formCode;
 
     /**
      * @var
@@ -54,7 +54,7 @@ class EburyDrive
 
         // certain initialisation
         EburyDrive::$accountId = $accId = filter_var($_GET['accId'], FILTER_SANITIZE_STRING);
-        EburyDrive::$formId = $formId = filter_var($_GET['formId'], FILTER_SANITIZE_STRING);
+        EburyDrive::$formCode = $formId = filter_var($_GET['formId'], FILTER_SANITIZE_STRING);
         EburyDrive::$filename = base64_decode($_GET['filename']);
 
 
